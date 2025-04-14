@@ -1,38 +1,32 @@
 from typing import Union
-import moondream as md
+import moondream as md  
 from PIL import Image
 
 class MoondreamHelper:
-    # Init moondream model
     def __init__(self, api_key=None):
         self.model = md.vl(api_key=api_key)
 
-    # Generate a description
     def describe(self, image: Union[Image.Image, str], detail: str = "normal") -> str:
         img = self._load_image(image)
-        caption = self.model.caption(img, length=detail)
-        return caption["caption"]
-    
-    # Query the image
+        response = self.model.caption(img, length=detail)
+        return response.get("caption", "No caption returned.")
+
     def query(self, image: Union[Image.Image, str], question: str) -> str:
         img = self._load_image(image)
-        query = self.model.query(img, question)
-        return query["answer"]
-    
-    # detect objects in the image
-    def detect(self, image: Union[Image.Image, object: str]) -> str:
-        img = self._load_image(image)
-        detect = self.model.query(img, object)
-        return detect["detection"]
+        response = self.model.query(img, question)
+        return response.get("answer", "No answer returned.")
 
-    # Point out object in image
-    def point(self, image: Union[Image.Image, str], object: str) -> str:
+    def detect(self, image: Union[Image.Image, str], question: str) -> str:
         img = self._load_image(image)
-        point = self.model.point(img, object)
-        return point["point"]
-    
+        response = self.model.query(img, question)
+        return response.get("answer", "No detection info returned.")
+
+    def point(self, image: Union[Image.Image, str], target: str) -> str:
+        img = self._load_image(image)
+        response = self.model.point(img, target)
+        return response.get("answer", "No visual pointing result returned.")
+
     def _load_image(self, image: Union[Image.Image, str]) -> Image.Image:
         if isinstance(image, str):
             return Image.open(image)
         return image
-    
