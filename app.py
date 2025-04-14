@@ -9,8 +9,6 @@ st.set_page_config(
     page_icon="🌕"
 )
 
-st.title("Hello this is a title")
-
 @st.cache_resource
 def get_moondream():
     return MoondreamHelper(api_key=st.secrets["moondream_api_key"])
@@ -40,3 +38,17 @@ if page == "Describe Image":
                 description = moondream.describe(image, detail)
                 st.success("Description generated!")
                 st.write(description)        
+
+elif page == "Caption Image":
+    st.title("Ask questions")
+    st.write("Query the image as you like")
+    image = upload_image()
+    if image:
+        question = st.text_input("Ask something about the image", placeholder="How many objects are on the image")
+
+        if question and st.button("Get answer"):
+            with st.spinner("Thinking..."):
+                answer = moondream.query(image, question)
+                st.success("Answer generated!")
+                st.write(answer)
+
