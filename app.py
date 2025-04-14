@@ -51,4 +51,17 @@ elif page == "Caption Image":
                 answer = moondream.query(image, question)
                 st.success("Answer generated!")
                 st.write(answer)
-
+elif page == "Detect Image":
+    st.sidebar.subheader("Detect Image")
+    st.title("Detect the Image")
+    st.sidebar.write("Upload an image to detect objects.")
+    image = upload_image()
+    if image:
+        st.write("Enter the object to detect (e.g., 'person', 'car', 'dog'). Use lowercase letters.")
+        object = st.text_input("Object to detect:", placeholder="person")
+        if st.button("Detect"):
+            with st.spinner("Detecting objects..."):
+                detect = moondream.detect(image, object)
+                st.success("Objects detected!")
+                st.write(detect)
+                st.balloons()
