@@ -1,3 +1,4 @@
+from PIL import Image
 import streamlit as st
 from moondream_lib import MoondreamHelper
 
@@ -16,6 +17,14 @@ def get_moondream():
 
 moondream = get_moondream()
 
+def upload_image():
+    uploaded_file = st.file_uploader("Upload an image", type=["jpg", "png", "jpeg"], key=page)
+    if uploaded_file:
+        image = Image.open(uploaded_file)
+        st.image(image, caption="This is the image you uploaded", use_column_width=True)
+        return image
+    return None
+
 # Sidebar nav
 st.sidebar.title("🌕 Moondream Vision API")
 page = st.sidebar.radio("Select the page you want to visit", ["Describe Image", "Caption Image"])
@@ -23,3 +32,11 @@ page = st.sidebar.radio("Select the page you want to visit", ["Describe Image", 
 if page == "Describe Image":
     st.title("🖼️ Describe Image")
     st.write("Upload an image to get an automatic description of it")
+    image = upload_image()
+    if image:
+        detail = st.radio("Select the description detail", ["Short", "Normal", "Long"], horizontal=True).lower()
+        if st.button("Generate description"):
+            with st.spinner("Analyzing image..."):
+                description = moondream.describe(image, detail)
+                st.success("Description generated!")
+                st.write(description)        
