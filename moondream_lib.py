@@ -18,3 +18,8 @@ class MoondreamHelper:
         img = self._load_image(image)
         query = self.model.query(img, question)
         return query["answer"]
+    
+    def _load_image(self, image: Union[Image.Image, str]) -> Image.Image:
+        if isinstance(image, str):
+            return Image.open(image)
+        return image

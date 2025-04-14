@@ -13,7 +13,7 @@ st.title("Hello this is a title")
 
 @st.cache_resource
 def get_moondream():
-    return MoondreamHelper(api_key="")
+    return MoondreamHelper(api_key=st.secrets["moondream_api_key"])
 
 moondream = get_moondream()
 
